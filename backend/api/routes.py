@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, Query, BackgroundTasks
-from scheduler import fetch_and_store_events
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 from db.database import get_db
@@ -34,8 +33,6 @@ async def get_ending_soon(
 ):
     return await crud.get_events(db=db, skip=skip, limit=limit, ending_soon=True)
 
-from services.ai_search import aggregate_search
-
 @router.post("/search", response_model=schemas.SearchResponse)
 async def ai_search_endpoint(
     request: schemas.SearchQuery,
@@ -43,7 +40,9 @@ async def ai_search_endpoint(
 ):
     """
     Advanced AI Search Agent Endpoint mapping DDG, Serper, and Internal APIs via an LLM.
+    Lazy-imports ai_search to avoid crashing the API on Vercel.
     """
+    from services.ai_search import aggregate_search
     return await aggregate_search(db=db, query=request.query)
 
 from sqlalchemy.future import select
@@ -128,6 +127,6 @@ async def run_scrapers_endpoint(background_tasks: BackgroundTasks):
     Manually trigger scrapers in the background.
     On Vercel, this is used with Cron Jobs.
     """
+    from scheduler import fetch_and_store_events
     background_tasks.add_task(fetch_and_store_events)
     return {"status": "Scraping started in background"}
-
