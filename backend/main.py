@@ -1,10 +1,19 @@
+import os
+import sys
+from pathlib import Path
+
+# Add the current directory to sys.path so imports like 'api', 'db', 'scheduler' work on Vercel
+current_dir = Path(__file__).parent.absolute()
+if str(current_dir) not in sys.path:
+    sys.path.append(str(current_dir))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes import router as events_router
 from api.external import router as jarvis_router
-from scheduler import start_scheduler
 from db.database import engine, Base
 from contextlib import asynccontextmanager
+from sqlalchemy import select
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
