@@ -3,10 +3,6 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from db.database import AsyncSessionLocal
 from db import crud
 import schemas
-from scrapers import (
-    DevpostScraper, UnstopScraper, EventbriteScraper, CollegeFestScraper, 
-    MLHScraper, DevfolioScraper, HackerEarthScraper, AllEventsScraper, TenTimesScraper
-)
 from services.processor import normalize_event
 import logging
 from datetime import datetime
@@ -16,6 +12,13 @@ logger = logging.getLogger(__name__)
 
 async def fetch_and_store_events():
     logger.info("Starting background scraping job...")
+    
+    # Lazy imports to prevent crashing the API process on platforms like Vercel
+    from scrapers import (
+        DevpostScraper, UnstopScraper, EventbriteScraper, CollegeFestScraper, 
+        MLHScraper, DevfolioScraper, HackerEarthScraper, AllEventsScraper, TenTimesScraper
+    )
+
     scrapers = [
         DevpostScraper(),
         UnstopScraper(),
