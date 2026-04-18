@@ -30,5 +30,11 @@
       "src": "/(.*)",
       "dest": "frontend/$1"
     }
+  ],
+  "crons": [
+    {
+      "path": "/events/scrape",
+      "schedule": "0 */6 * * *"
+    }
   ]
 }

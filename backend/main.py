@@ -12,8 +12,8 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     
-    # Start scheduler
-    start_scheduler()
+    # Start scheduler removed for Vercel Serverless compatibility
+    # Use /events/scrape endpoint via Vercel Crons instead
     yield
     # Shutdown logic if any
 

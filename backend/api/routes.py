@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, BackgroundTasks
+from scheduler import fetch_and_store_events
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 from db.database import get_db
@@ -120,4 +121,13 @@ async def export_events(
     # The JSON structure returned exactly matches the user request: {"events": [...]}
     # FastAPI's CORSMiddleware handles OPTIONS and proper headers globally.
     return {"events": events_list}
+
+@router.post("/scrape")
+async def run_scrapers_endpoint(background_tasks: BackgroundTasks):
+    """
+    Manually trigger scrapers in the background.
+    On Vercel, this is used with Cron Jobs.
+    """
+    background_tasks.add_task(fetch_and_store_events)
+    return {"status": "Scraping started in background"}
 
