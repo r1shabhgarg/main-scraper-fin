@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Aggregation Engine | Live Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+    <div class="blob-gradient"></div>
+    <div class="container">
+        <header>
+            <h1>Student Events Engine</h1>
+            <p class="subtitle">Discover Hackathons, Competitions, and Workshops dynamically aggregated from across the web.</p>
+            
+            <div class="search-container">
+                <input type="text" id="ai-search-input" placeholder="Ask AI: e.g. 'Hackathons in Bangalore'..." />
+                <button id="ai-search-btn">✨ AI Search</button>
+            </div>
+            
+            <div class="filter-controls" id="filter-controls">
+                <button class="filter-btn active" data-filter="competition">Competitions</button>
+                <button class="filter-btn" data-filter="hackathon">Hackathons</button>
+                <button class="filter-btn" data-filter="workshop">Workshops</button>
+                <button class="filter-btn" data-filter="quiz">Quizzes</button>
+                <button class="filter-btn" data-filter="conference">Conferences</button>
+                <button class="filter-btn" data-filter="cultural">Cultural Events</button>
+                <button class="filter-btn" data-filter="fest">College Fests</button>
+            </div>
+        </header>
+
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+            <p>Fetching latest events...</p>
+        </div>
+
+        <main id="events-container" class="events-container hidden">
+            <!-- Event categories will be injected here dynamically by JS -->
+        </main>
+        
+        <div id="empty-state" class="empty-state hidden">
+            <h2>No events found matching this criteria.</h2>
+            <p>Try refreshing the backend scrapers or changing filters.</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

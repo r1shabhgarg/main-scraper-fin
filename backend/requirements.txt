@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+asyncpg
+greenlet
+beautifulsoup4
+requests
+apscheduler
+pydantic
+pydantic-settings
+python-dotenv
+playwright
+duckduckgo-search
+google-generativeai
+httpx
