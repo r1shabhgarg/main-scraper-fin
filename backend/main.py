@@ -8,12 +8,14 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create tables if not exist
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # Create tables if not exist (Wrapped in try-except for Vercel stability)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except Exception as e:
+        print(f"CRITICAL: Database initialization failed: {e}")
     
     # Start scheduler removed for Vercel Serverless compatibility
-    # Use /events/scrape endpoint via Vercel Crons instead
     yield
     # Shutdown logic if any
 
@@ -37,3 +39,27 @@ app.include_router(jarvis_router)
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.get("/api/debug")
+async def debug_endpoint():
+    """
+    Helps diagnose Vercel deployment issues by checking env vars and DB status.
+    """
+    db_url = os.getenv("DATABASE_URL", "NOT_SET")
+    db_status = "Unknown"
+    error = None
+    
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(select(1))
+            db_status = "Connected"
+    except Exception as e:
+        db_status = "Failed"
+        error = str(e)
+        
+    return {
+        "database_url_configured": db_url != "NOT_SET" and "localhost" not in db_url,
+        "database_connection": db_status,
+        "error": error,
+        "environment": os.getenv("VERCEL_ENV", "local")
+    }
