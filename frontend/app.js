@@ -37,7 +37,7 @@ async function fetchEvents() {
         console.error("Error fetching events:", error);
         hideLoader();
         showEmptyState();
-        emptyState.innerHTML = "<h2>Error connecting to backend</h2><p>Make sure the FastAPI server is running on localhost:8000.</p>";
+        emptyState.innerHTML = `<h2>Error connecting to backend</h2><p>${error.message}. If deployed, check Vercel logs.</p>`;
     }
 }
 
@@ -212,7 +212,7 @@ async function fetchAISearch(query) {
         console.error("Error fetching AI search:", error);
         hideLoader();
         showEmptyState();
-        emptyState.innerHTML = "<h2>Error connecting to AI Search</h2><p>Make sure the backend is running.</p>";
+        emptyState.innerHTML = `<h2>Error connecting to AI Search</h2><p>${error.message}. Ensure your API keys are set in Vercel env vars.</p>`;
     }
 }
 
